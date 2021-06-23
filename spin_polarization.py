@@ -30,7 +30,7 @@ calc = GPAW(mode='lcao', basis='dzp', xc='PBE',
                 nbands='120%', kpts=(3,3,1), txt = 'eval.txt',
                 parallel=dict(sl_auto=True))  # enable ScaLAPACK parallelization
 
-bulk.set_calculator(calc)
+surf.set_calculator(calc)
 
-relax = BFGS(bulk, trajectory='opt.traj',logfile='opt.log')
+relax = BFGS(surf, trajectory='opt.traj',logfile='opt.log')
 relax.run(fmax=0.05)
