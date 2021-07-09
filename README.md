@@ -18,33 +18,49 @@ cd Python-3.6.3/
 
 ./configure CC=icc --prefix=$HOME/soft/python-3.6.3         
 
+
 ###install python in $HOME/soft/python-3.6.3  
 make
+
 make install
 
 vim ~/.bashrc
+
 ##create the path in bash_rc 
+
 export PATH=$HOME/soft/python-3.6.3/bin:$PATH
 
 
 ### create the virtual env
 ###first check the python3 you use
+
 which python3
+
 ### the output should be 
+
 ~/soft/python-3.6.3/bin/python3
+
 ### if no log out and log in again or touch ~/.bashrc
 
 ###create the virtual environment named “Myenv” 
+
 python3 -m venv Myenv
+
 #activate it by 
+
 source Myenv/bin/activate
+
 #deactivate it
+
 deactivate
 
 
 ###ASE and useful stuff
+
 activate the Myenv first
+
 cd ~/Myenv
+
 Create requirement.txt in ~/Myenv contains
 
 ase==3.17.0
