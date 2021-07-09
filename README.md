@@ -1,16 +1,23 @@
 # ASE-instruction
 
-ASE and python stuff
+### ASE and python stuff
 
-Install python3
+###Install python3
 
 cd ~
+#
 mkdir soft
+
 cd soft
+
 wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
+
 tar -zxvf Python-3.6.3.tgz 
+
 cd Python-3.6.3/
-./configure --prefix=$HOME/soft/python-3.6.3        
+
+./configure CC=icc --prefix=$HOME/soft/python-3.6.3         
+
 ###install python in $HOME/soft/python-3.6.3  
 make
 make install
