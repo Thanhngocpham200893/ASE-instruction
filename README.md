@@ -55,6 +55,13 @@ source Myenv/bin/activate
 deactivate
 
 
+
+###update pip
+pip install -U pip
+
+pip install numpy scipy ase cymem cython decorator mpi4py pytest
+
+
 ###ASE and useful stuff
 
 activate the Myenv first
