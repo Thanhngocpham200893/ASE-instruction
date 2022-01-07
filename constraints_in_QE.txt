@@ -1,0 +1,12 @@
+from ase.constraints import FixAtoms, FixCartesian
+
+constraint_mask = np.ones((len(surf), 3), dtype='int')
+for constraint in surf.constraints:
+    if isinstance(constraint, FixAtoms):
+        constraint_mask[constraint.index] = 0
+    elif isinstance(constraint, FixCartesian):
+        constraint_mask[constraint.a] = constraint.mask
+    else:
+        warnings.warn('Ignored unknown constraint {}'.format(constraint))
+
+print(constraint_mask)
