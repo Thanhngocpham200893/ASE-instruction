@@ -11,3 +11,6 @@ surf.set_constraint(c)
 
 ###set initial magnetic moments for Ca16O48Ti16
 surf.set_initial_magnetic_moments(16*[0]+48*[0]+16*[2])
+
+###make the picture
+povray -W2230 -H2190 pov_slab_x3.pov
