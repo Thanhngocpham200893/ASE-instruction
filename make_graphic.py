@@ -1,29 +1,71 @@
-# creates: NaCl_C6H6.png
-
 import numpy as np
+import os
+import sys
+
+
+if len(sys.argv) == 4:
+    atom_structure           = str(sys.argv[1])
+    prefix                   = str(sys.argv[2])
+    view                     = str(sys.argv[3])
+else:
+    sys.exit('make_graphic.py atomic_structure  prefix view[side]')
+
+
 
 from ase import Atoms
 from ase.io import write, read
 from ase.build import molecule
 from ase.io.pov import get_bondpairs, set_high_bondorder_pairs
-slab = read('pd1o2.pwi', index = -1)
+from ase.geometry import wrap_positions
+slab = read(atom_structure, index = -1)
+slab.center(axis=(0,1))
 
+cluster  = slab[[atom.index for atom in slab if atom.position[2] > 0.4]]
+com      = cluster.get_center_of_mass()
+cell_slab = slab.get_cell(complete = True)
+com_slab = 0.5*( cell_slab[0] + cell_slab[1] + cell_slab[2])
+dis = [com_slab[0] - com[0], com_slab[1] - com[1] , com_slab[2] - com[2] ]
+slab.translate(dis)
+slab.wrap()
+cps = slab.get_scaled_positions()
+print(cps)
+for i,j in enumerate(cps):
+    if cps[i][0] > 0.98:
+        cps[i][0] = cps[i][0]-1
+    if cps[i][1] > 0.98:
+        cps[i][1] = cps[i][1]-1
+slab.set_scaled_positions(cps)
+slab.write('test.xsf')
+#slab.center(axis=(2))
+#slab.write('test.xsf')
 
+#slab.wrap()
+#print(dis)
+#slab.translate(dis)
+#slab.center(axis=(0,1))
+#slab.write('test1.xsf')
+#slab.wrap(slab.get_scaled_positions())
 bondpairs = get_bondpairs(slab, radius=1.0)
 high_bondorder_pairs = {}
 bondpairs = set_high_bondorder_pairs(bondpairs, high_bondorder_pairs)
 
 # View used to start ag, and find desired viewing angle
 # view(atoms)
-rot = '0x,0y,0z'  # found using ag: 'view -> rotate'
-#rot = '-90x,0y,0z'  # found using ag: 'view -> rotate'
 
+if view == 'side':
+    rot = '-60x,0y,0z'  # found using ag: 'view -> rotate'
+    unit_cell = (1,1,1)
+else:
+    rot = '0x,0y,0z'  # found using ag: 'view -> rotate'
+    unit_cell = (1,1,1)
+
+slab = slab*unit_cell
 ###make the radius
 radius = []
 for atom in slab:
-    if atom.position[2] > 0.1:
+    if atom.position[2] > (0.5+dis[2]):
         if atom.symbol == 'Pd':
-            radius.append(1.0)
+            radius.append(0.9)
         elif atom.symbol =='O':
             radius.append(0.7)
     else:
@@ -35,6 +77,8 @@ for atom in slab:
             radius.append(0.5)
         elif atom.symbol =='Sr':
             radius.append(0.6)
+        elif atom.symbol =='Cu':
+            radius.append(0.3)
 
 print(radius)
 
@@ -43,7 +87,7 @@ print(radius)
 # Common kwargs for eps, png, pov
 generic_projection_settings = {
     'rotation': rot,  # text string with rotation (default='' )
-    'radii': radius,  # float, or a list with one float per atom
+    'radii': 1.0,  # float, or a list with one float per atom
     'colors': None,  # List: one (r, g, b) tuple per atom
     'show_unit_cell': 0,   # 0, 1, or 2 to not show, show, and show all of cell
 }
@@ -70,6 +114,8 @@ povray_settings = {
 
 # Write the .pov (and .ini) file.
 # comment out render not call the povray executable
-renderer = write('1.pov', slab,
+renderer = write('%s.pov' %(prefix), slab,
                  **generic_projection_settings,
                  povray_settings=povray_settings)
+
+renderer.render()
